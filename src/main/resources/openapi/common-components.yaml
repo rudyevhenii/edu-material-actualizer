@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: Common Components
+  description: Common Components
+  version: 1.0.0
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: "HTTP status code (e.g. 400)"
+        message:
+          type: string
+          description: "Human-readable error message (e.g. 'Invalid request parameters')"
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      properties:
+        field:
+          type: string
+          description: "Name of the invalid field (e.g. 'email')"
+        error:
+          type: string
+          description: "Validation error detail (e.g. 'must be a valid email address')"
+
+  responses:
+    BadRequest:
+      description: "Validation errors with field-level details"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    InternalServerError:
+      description: "Unexpected server error occurred"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
