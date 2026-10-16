@@ -1,7 +1,10 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.1.1'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '7.4.0'
 }
 
 group = 'dev.rudyevhenii'
@@ -26,12 +29,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-validation-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
@@ -40,6 +48,49 @@ dependencies {
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+	}
+}
+
+def apiDomains = [
+		"document"    : "openapi-document.yaml"
+]
+
+apiDomains.each {domainName, fileName ->
+	tasks.register("generate${domainName.capitalize()}Api", GenerateTask) {
+		generatorName = "spring"
+		inputSpec = "$rootDir/src/main/resources/openapi/${fileName}".replace('\\', "/")
+
+		outputDir = layout.buildDirectory.dir("generated-openapi").get().asFile.absolutePath
+
+		apiPackage = "dev.rudyevhenii.edu_material_actualizer.api.interfaces.${domainName}"
+		modelPackage = "dev.rudyevhenii.edu_material_actualizer.api.dto.${domainName}"
+		modelNameSuffix = "Dto"
+
+		configOptions = [
+				useBeanValidation    : "true",
+				performBeanValidation: "true",
+				interfaceOnly        : "true",
+				useSpringBoot3       : "true",
+				useJakartaEe         : "true",
+				skipDefaultInterface : "true",
+				useTags              : "true"
+		]
+	}
+}
+
+tasks.register("generateAllApis") {
+	dependsOn apiDomains.collect { domainName, fileName -> "generate${domainName.capitalize()}Api"}
+}
+
+tasks.named("compileJava") {
+	dependsOn apiDomains.collect { domainName, fileName -> "generate${domainName.capitalize()}Api" }
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs += layout.buildDirectory.dir("generated-openapi/src/main/java").get().asFile
+		}
 	}
 }
 

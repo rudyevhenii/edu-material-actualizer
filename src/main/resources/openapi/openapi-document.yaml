@@ -1,0 +1,44 @@
+openapi: 3.1.0
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+
+paths:
+  /api/documents:
+    post:
+      operationId: "uploadDocument"
+      tags:
+        - "Document"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "202":
+          description: "Document accepted"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentStatusResponse"
+        "400":
+          $ref: 'common-components.yaml#/components/responses/BadRequest'
+        "500":
+          $ref: 'common-components.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    DocumentStatusResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
