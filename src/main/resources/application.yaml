@@ -1,6 +1,9 @@
 spring:
   application:
     name: edu-material-actualizer
+  config:
+    import:
+      - 'file:.env[.properties]'
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
