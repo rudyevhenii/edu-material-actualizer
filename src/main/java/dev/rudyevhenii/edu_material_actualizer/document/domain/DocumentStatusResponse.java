@@ -6,8 +6,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record DocumentStatusResponse(
-        UUID id,
-        JobStatus status,
+        UUID jobId,
+        JobStatus jobStatus,
         String fileName,
         Instant createdAt,
         Instant updatedAt

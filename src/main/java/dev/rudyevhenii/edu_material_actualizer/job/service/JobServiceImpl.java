@@ -28,7 +28,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Job getJobById(UUID id) {
         return repository.findJobById(id)
-                .orElseThrow(() -> new JobNotFoundException("Job for document processing does not exist with id '%s'"
+                .orElseThrow(() -> new JobNotFoundException("Job for document processing does not exist with jobId '%s'"
                         .formatted(id)));
     }
 
