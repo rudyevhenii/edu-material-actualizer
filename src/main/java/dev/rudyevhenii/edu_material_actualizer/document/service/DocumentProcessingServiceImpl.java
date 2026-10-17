@@ -16,11 +16,14 @@ import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,6 +33,7 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     private final JobService jobService;
     private final DocumentDomainMapper mapper;
     private final GeneratorUtils generator;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public DocumentStatusResponse processDocument(MultipartFile multipartFile) {
@@ -67,7 +71,11 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     }
 
     private List<TextChunk> extractTextChunks(XWPFParagraph paragraph) {
+        if (CollectionUtils.isEmpty(paragraph.getRuns())) {
+            return Collections.emptyList();
+        }
         List<TextChunk> textChunks = new ArrayList<>();
+
         for (XWPFRun run : paragraph.getRuns()) {
             TextChunk textChunk = TextChunk.builder()
                     .id(generator.uuid())

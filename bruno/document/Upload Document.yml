@@ -12,7 +12,7 @@ http:
       - name: file
         type: file
         value:
-          - C:\Users\admin\Downloads\Контрольне завдання Частина 2.docx
+          - C:\Users\admin\OneDrive\Документы\Working_stuff\Word things\11 semestr\Основи аналізу та моделювання бізнес-процесів в ІТ\word\Рудь_М-F2-25-1-ПІ_ПР1.docx
         contentType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
   auth: inherit
 
