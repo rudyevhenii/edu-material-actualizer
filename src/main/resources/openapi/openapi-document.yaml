@@ -39,6 +39,16 @@ components:
     DocumentStatusResponse:
       type: object
       properties:
-        jobId:
+        id:
           type: string
           format: uuid
+        status:
+          $ref: 'common-components.yaml#/components/schemas/JobStatus'
+        fileName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
