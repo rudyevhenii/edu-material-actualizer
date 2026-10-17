@@ -6,6 +6,14 @@ info:
 
 components:
   schemas:
+    JobStatus:
+      type: string
+      enum:
+        - PENDING
+        - PROCESSING
+        - COMLETED
+        - FAILED
+
     ErrorResponse:
       type: object
       properties:

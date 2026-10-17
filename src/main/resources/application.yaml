@@ -1,8 +1,15 @@
 spring:
   application:
     name: edu-material-actualizer
+  config:
+    import:
+      - 'file:.env[.properties]'
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
       chat:
         model: gpt-5-mini
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}

@@ -42,3 +42,13 @@ components:
         jobId:
           type: string
           format: uuid
+        jobStatus:
+          $ref: 'common-components.yaml#/components/schemas/JobStatus'
+        fileName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
