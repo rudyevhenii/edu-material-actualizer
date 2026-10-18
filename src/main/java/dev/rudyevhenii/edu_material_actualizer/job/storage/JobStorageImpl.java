@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,8 +28,8 @@ public class JobStorageImpl implements JobStorage {
     }
 
     @Override
-    public Optional<Job> findJobById(UUID id) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(id))
+    public Optional<Job> findJobById(String id) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(JOB_KEY_PREFIX + id))
                 .map(mapper::map);
     }
 

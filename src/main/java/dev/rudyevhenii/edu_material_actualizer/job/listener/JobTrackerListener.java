@@ -5,7 +5,6 @@ import dev.rudyevhenii.edu_material_actualizer.job.service.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -15,7 +14,6 @@ public class JobTrackerListener {
 
     private final JobService jobService;
 
-    @Async("virtualExecutor")
     @EventListener
     public void onJobStatusChangedEvent(JobStatusChangedEvent event) {
         log.info("Job with id [{}] transitioned to [{}] status", event.id(), event.jobStatus());

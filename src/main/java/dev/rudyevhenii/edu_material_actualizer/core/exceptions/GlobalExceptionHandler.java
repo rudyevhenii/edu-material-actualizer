@@ -47,6 +47,30 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(status, ex.getMessage()));
     }
 
+    @ExceptionHandler(StorageInitializationException.class)
+    public ResponseEntity<ErrorResponse> handleException(StorageInitializationException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorResponse> handleException(FileUploadException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
+    @ExceptionHandler(FileRetrievalException.class)
+    public ResponseEntity<ErrorResponse> handleException(FileRetrievalException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
