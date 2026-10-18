@@ -40,7 +40,7 @@ public class JobServiceImpl implements JobService {
     }
 
     private Job getById(UUID id) {
-        return repository.findJobById(id)
+        return repository.findJobById(id.toString())
                 .orElseThrow(() -> new JobNotFoundException("Job for document processing does not exist with jobId '%s'"
                         .formatted(id)));
     }
