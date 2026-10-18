@@ -23,5 +23,5 @@ app:
     files:
       scheduler:
         exriration:
-          cron: "0 * * * * *"
+          cron: "0 0 * * * *"
       cleanup: 1h

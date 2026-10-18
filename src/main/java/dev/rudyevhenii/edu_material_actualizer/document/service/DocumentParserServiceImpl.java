@@ -28,8 +28,8 @@ public class DocumentParserServiceImpl implements DocumentParserService {
     private final GeneratorUtils generator;
 
     @Override
-    public Document parseDocument(InputStream fileStream) {
-        return extractDocument(fileStream);
+    public Document parseDocument(InputStream inputStream) {
+        return extractDocument(inputStream);
     }
 
     private Document extractDocument(InputStream inputStream) {

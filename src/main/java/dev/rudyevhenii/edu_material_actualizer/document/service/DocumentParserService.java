@@ -6,5 +6,5 @@ import java.io.InputStream;
 
 public interface DocumentParserService {
 
-    Document parseDocument(InputStream fileStream);
+    Document parseDocument(InputStream inputStream);
 }

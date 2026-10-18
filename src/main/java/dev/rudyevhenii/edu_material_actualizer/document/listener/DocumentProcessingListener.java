@@ -27,7 +27,7 @@ public class DocumentProcessingListener {
     @Async("virtualExecutor")
     @EventListener
     public void handleDocument(DocumentUploadCompletedEvent event) {
-        log.info("Processing document with jobId [{}] and filename: {}", event.jobId(), event.savedFilePath());
+        log.info("Processing document with jobId [{}]", event.jobId());
         publisher.publishEvent(new JobStatusChangedEvent(event.jobId(), JobStatus.PROCESSING));
 
         InputStream inputStream = minioStorageService.downloadFile(event.savedFilePath());

@@ -29,7 +29,7 @@ public class JobStorageImpl implements JobStorage {
 
     @Override
     public Optional<Job> findJobById(String id) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(id))
+        return Optional.ofNullable(redisTemplate.opsForValue().get(JOB_KEY_PREFIX + id))
                 .map(mapper::map);
     }
 
