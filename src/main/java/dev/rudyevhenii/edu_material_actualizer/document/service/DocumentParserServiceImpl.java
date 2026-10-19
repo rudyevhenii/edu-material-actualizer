@@ -3,6 +3,7 @@ package dev.rudyevhenii.edu_material_actualizer.document.service;
 import dev.rudyevhenii.edu_material_actualizer.core.exceptions.DocumentProcessingException;
 import dev.rudyevhenii.edu_material_actualizer.core.exceptions.InvalidDocumentFormatException;
 import dev.rudyevhenii.edu_material_actualizer.core.util.GeneratorUtils;
+import dev.rudyevhenii.edu_material_actualizer.document.domain.AggregatedBlock;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.ParagraphChunk;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.TextChunk;
@@ -12,6 +13,7 @@ import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -27,6 +29,9 @@ public class DocumentParserServiceImpl implements DocumentParserService {
 
     private final GeneratorUtils generator;
 
+    @Value("${app.document.parser.aggregated-text.characters-per-paragraph}")
+    private Integer charactersPerParagraph;
+
     @Override
     public Document parseDocument(InputStream inputStream) {
         return extractDocument(inputStream);
@@ -36,7 +41,7 @@ public class DocumentParserServiceImpl implements DocumentParserService {
         try (XWPFDocument document = new XWPFDocument(inputStream)) {
             return Document.builder()
                     .id(generator.uuid())
-                    .paragraphChunks(extractParagraphChunks(document))
+                    .aggregatedBlocks(extractParagraphAggregatedText(document))
                     .document(document)
                     .build();
         } catch (NotOfficeXmlFileException | POIXMLException e) {
@@ -46,9 +51,46 @@ public class DocumentParserServiceImpl implements DocumentParserService {
         }
     }
 
-    private List<ParagraphChunk> extractParagraphChunks(XWPFDocument document) {
-        List<ParagraphChunk> paragraphChunks = new ArrayList<>();
+    private List<AggregatedBlock> extractParagraphAggregatedText(XWPFDocument document) {
+        List<AggregatedBlock> aggregatedBlocks = new ArrayList<>();
+
+        StringBuilder textBuilder = new StringBuilder();
+        XWPFParagraph currentParagraph = document.getLastParagraph();
+        List<XWPFParagraph> paragraphs = new ArrayList<>();
+
         for (XWPFParagraph paragraph : document.getParagraphs()) {
+            for (XWPFRun run : paragraph.getRuns()) {
+                String text = run.getText(0);
+                if (text != null) {
+                    textBuilder.append(text);
+                }
+            }
+            paragraphs.add(paragraph);
+
+            if (!currentParagraph.equals(paragraph)) {
+                textBuilder.append(System.lineSeparator());
+                if (textBuilder.length() >= charactersPerParagraph) {
+                    AggregatedBlock aggregatedBlock = AggregatedBlock.builder()
+                            .id(generator.uuid())
+                            .aggregatedText(textBuilder.toString())
+                            .paragraphChunks(extractParagraphChunks(paragraphs))
+                            .build();
+
+                    textBuilder.setLength(0);
+                    aggregatedBlocks.add(aggregatedBlock);
+                    paragraphs.clear();
+                }
+            }
+            if (!currentParagraph.equals(paragraph)) {
+                currentParagraph = paragraph;
+            }
+        }
+        return aggregatedBlocks;
+    }
+
+    private List<ParagraphChunk> extractParagraphChunks(List<XWPFParagraph> paragraphs) {
+        List<ParagraphChunk> paragraphChunks = new ArrayList<>();
+        for (XWPFParagraph paragraph : paragraphs) {
             ParagraphChunk paragraphChunk = ParagraphChunk.builder()
                     .id(generator.uuid())
                     .textChunks(extractTextChunks(paragraph))
