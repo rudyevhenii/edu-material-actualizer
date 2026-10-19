@@ -25,3 +25,7 @@ app:
         exriration:
           cron: "0 0 * * * *"
       cleanup: 1h
+  document:
+    parser:
+      aggregated-text:
+        characters-per-paragraph: 500

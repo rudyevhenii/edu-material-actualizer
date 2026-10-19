@@ -15,6 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Document {
     private UUID id;
-    private List<ParagraphChunk> paragraphChunks;
+    private List<AggregatedBlock> aggregatedBlocks;
     private XWPFDocument document;
 }

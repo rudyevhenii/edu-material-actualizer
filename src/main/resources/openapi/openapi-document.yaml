@@ -40,11 +40,11 @@ components:
       type: object
       description: "Document info processing status response"
       properties:
-        jobId:
+        id:
           type: string
           format: uuid
           description: "Unique document info identifier (e.g. 660e8400-e29b-41d4-a716-446655440001)"
-        jobStatus:
+        documentStatus:
           $ref: 'common-components.yaml#/components/schemas/DocumentStatus'
           description: "Current document info processing status (e.g. QUEUED, PROCESSING, COMPLETED, FAILED)"
         fileName:
