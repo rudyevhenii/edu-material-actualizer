@@ -23,8 +23,8 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(status, message));
     }
 
-    @ExceptionHandler(JobNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(JobNotFoundException ex) {
+    @ExceptionHandler(DocumentInfoNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(DocumentInfoNotFoundException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         logErrorMessage(status, ex);
         return ResponseEntity.status(status)

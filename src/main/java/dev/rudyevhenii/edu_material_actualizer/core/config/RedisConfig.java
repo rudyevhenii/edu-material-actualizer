@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import dev.rudyevhenii.edu_material_actualizer.job.model.JobModel;
+import dev.rudyevhenii.edu_material_actualizer.document.model.DocumentInfoModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,8 +18,8 @@ public class RedisConfig {
 
     @Bean
     @SuppressWarnings("removal")
-    public RedisTemplate<String, JobModel> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, JobModel> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, DocumentInfoModel> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, DocumentInfoModel> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         ObjectMapper objectMapper = createObjectMapper();

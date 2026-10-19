@@ -1,6 +1,6 @@
-package dev.rudyevhenii.edu_material_actualizer.job.model;
+package dev.rudyevhenii.edu_material_actualizer.document.domain;
 
-import dev.rudyevhenii.edu_material_actualizer.job.JobStatus;
+import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +13,10 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobModel {
+public class DocumentInfo {
     private UUID id;
-    private JobStatus status;
+    @Builder.Default
+    private DocumentStatus documentStatus = DocumentStatus.PENDING;
     private String fileName;
     private Instant createdAt;
     private Instant updatedAt;

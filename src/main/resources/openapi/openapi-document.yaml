@@ -38,23 +38,23 @@ components:
   schemas:
     DocumentStatusResponse:
       type: object
-      description: "Document processing job status response"
+      description: "Document info processing status response"
       properties:
         jobId:
           type: string
           format: uuid
-          description: "Unique job identifier (e.g. 660e8400-e29b-41d4-a716-446655440001)"
+          description: "Unique document info identifier (e.g. 660e8400-e29b-41d4-a716-446655440001)"
         jobStatus:
-          $ref: 'common-components.yaml#/components/schemas/JobStatus'
-          description: "Current document processing job status (e.g. QUEUED, PROCESSING, COMPLETED, FAILED)"
+          $ref: 'common-components.yaml#/components/schemas/DocumentStatus'
+          description: "Current document info processing status (e.g. QUEUED, PROCESSING, COMPLETED, FAILED)"
         fileName:
           type: string
           description: "Original name of the uploaded file (e.g. lecture-notes.pdf)"
         createdAt:
           type: string
           format: date-time
-          description: "Job creation timestamp (e.g. 2024-01-15T10:05:00Z)"
+          description: "Document info creation timestamp (e.g. 2024-01-15T10:05:00Z)"
         updatedAt:
           type: string
           format: date-time
-          description: "Last job status update timestamp (e.g. 2024-01-15T14:30:00Z)"
+          description: "Last document info status update timestamp (e.g. 2024-01-15T14:30:00Z)"

@@ -1,10 +1,10 @@
 package dev.rudyevhenii.edu_material_actualizer.document.listener;
 
+import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
+import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentStatusChangedEvent;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentUploadCompletedEvent;
 import dev.rudyevhenii.edu_material_actualizer.document.service.DocumentParserService;
-import dev.rudyevhenii.edu_material_actualizer.job.JobStatus;
-import dev.rudyevhenii.edu_material_actualizer.job.domain.JobStatusChangedEvent;
 import dev.rudyevhenii.edu_material_actualizer.minio.service.MinioStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,8 @@ public class DocumentProcessingListener {
     @Async("virtualExecutor")
     @EventListener
     public void handleDocument(DocumentUploadCompletedEvent event) {
-        log.info("Processing document with jobId [{}]", event.jobId());
-        publisher.publishEvent(new JobStatusChangedEvent(event.jobId(), JobStatus.PROCESSING));
+        log.info("Processing document with id [{}]", event.id());
+        publisher.publishEvent(new DocumentStatusChangedEvent(event.id(), DocumentStatus.PROCESSING));
 
         InputStream inputStream = minioStorageService.downloadFile(event.savedFilePath());
         Document document = documentParserService.parseDocument(inputStream);
