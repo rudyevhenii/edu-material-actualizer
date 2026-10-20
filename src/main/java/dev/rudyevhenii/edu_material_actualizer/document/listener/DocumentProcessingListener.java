@@ -6,6 +6,7 @@ import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentStatusCha
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentUploadCompletedEvent;
 import dev.rudyevhenii.edu_material_actualizer.document.service.DocumentParserService;
 import dev.rudyevhenii.edu_material_actualizer.minio.service.MinioStorageService;
+import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,6 +24,7 @@ public class DocumentProcessingListener {
     private final DocumentParserService documentParserService;
     private final MinioStorageService minioStorageService;
     private final ApplicationEventPublisher publisher;
+    private final SystemOneClient systemOneClient;
 
     @Async("virtualExecutor")
     @EventListener
@@ -32,5 +34,7 @@ public class DocumentProcessingListener {
 
         InputStream inputStream = minioStorageService.downloadFile(event.savedFilePath());
         Document document = documentParserService.parseDocument(inputStream);
+
+        systemOneClient.doActualizationCheck(document);
     }
 }

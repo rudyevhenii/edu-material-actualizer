@@ -15,6 +15,6 @@ import java.util.UUID;
 public class AggregatedBlock {
     private UUID id;
     private String aggregatedText;
-    private boolean requiredFactCheck;
+    private boolean requiredActualization;
     private List<ParagraphChunk> paragraphChunks;
 }
