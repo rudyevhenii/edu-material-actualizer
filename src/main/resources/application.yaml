@@ -25,6 +25,11 @@ app:
         exriration:
           cron: "0 0 * * * *"
       cleanup: 1h
+  system-one:
+    laya:
+      base-url: "http://${LAYA_HOST:localhost}:${LAYA_PORT:9100}"
+    response:
+      threshold: 0.7
   document:
     parser:
       aggregated-text:

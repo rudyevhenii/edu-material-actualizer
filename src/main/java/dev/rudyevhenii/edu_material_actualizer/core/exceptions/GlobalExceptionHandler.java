@@ -71,6 +71,14 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(status, ex.getMessage()));
     }
 
+    @ExceptionHandler(InstructionsReadException.class)
+    public ResponseEntity<ErrorResponse> handleException(InstructionsReadException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
