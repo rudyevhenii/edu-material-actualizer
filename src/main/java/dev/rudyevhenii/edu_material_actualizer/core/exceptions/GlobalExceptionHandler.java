@@ -2,6 +2,7 @@ package dev.rudyevhenii.edu_material_actualizer.core.exceptions;
 
 import dev.rudyevhenii.edu_material_actualizer.core.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,6 +74,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InstructionsReadException.class)
     public ResponseEntity<ErrorResponse> handleException(InstructionsReadException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ConfigurationPropertiesBindException.class)
+    public ResponseEntity<ErrorResponse> handleException(ConfigurationPropertiesBindException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         logErrorMessage(status, ex);
         return ResponseEntity.status(status)

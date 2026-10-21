@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum LayaModels {
+public enum LayaModel {
     LAYA("laya"),
     LAYA_MULTILINGUAL("laya-multilingual"),
     LAYA_TYPED_DECISIONS("laya-typed-decisions");

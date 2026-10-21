@@ -1,0 +1,37 @@
+package dev.rudyevhenii.edu_material_actualizer.systemone.ai.jev;
+
+import dev.rudyevhenii.edu_material_actualizer.systemone.AbstractSystemOneClient;
+import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneType;
+import dev.rudyevhenii.edu_material_actualizer.systemone.ai.jev.properties.JevProperties;
+import dev.rudyevhenii.edu_material_actualizer.systemone.validator.SystemOneThresholdValidator;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
+
+import java.util.concurrent.ExecutorService;
+
+@Component
+public class JevClient extends AbstractSystemOneClient {
+
+    private final JevProperties jevProperties;
+
+    public JevClient(ExecutorService virtualExecutor, RestClient jevRestClient,
+                     SystemOneThresholdValidator thresholdValidator, JevProperties jevProperties) {
+        super(virtualExecutor, jevRestClient, thresholdValidator);
+        this.jevProperties = jevProperties;
+    }
+
+    @Override
+    protected String getEndpoint() {
+        return jevProperties.endpoint();
+    }
+
+    @Override
+    protected String getModel() {
+        return jevProperties.model().getModel();
+    }
+
+    @Override
+    public SystemOneType getSystemOneType() {
+        return SystemOneType.JEV;
+    }
+}
