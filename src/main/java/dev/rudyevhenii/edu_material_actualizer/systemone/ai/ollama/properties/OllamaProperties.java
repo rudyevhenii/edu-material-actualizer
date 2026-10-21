@@ -1,6 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.systemone.ai.ollama.properties;
 
-import dev.rudyevhenii.edu_material_actualizer.systemone.ai.ollama.OllamaModels;
+import dev.rudyevhenii.edu_material_actualizer.systemone.ai.ollama.OllamaModel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
@@ -10,8 +10,6 @@ import java.net.URI;
 public record OllamaProperties(
         @DefaultValue("http://localhost:11434") URI baseUrl,
         @DefaultValue("/v1/systemone") String endpoint,
-        OllamaModels model
+        OllamaModel model
 ) {
-
-
 }
