@@ -13,6 +13,10 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+  http:
+    clients:
+      connect-timeout: 30s
+      read-timeout: 120s
 
 app:
   minio:
@@ -28,8 +32,13 @@ app:
   system-one:
     laya:
       base-url: "http://${LAYA_HOST:localhost}:${LAYA_PORT:9100}"
+      model: laya_multilingual
+    ollama:
+      base-url: "http://localhost:11434"
+      model: tev_1_0_8b
     response:
       threshold: 0.7
+    type: ollama
   document:
     parser:
       aggregated-text:
