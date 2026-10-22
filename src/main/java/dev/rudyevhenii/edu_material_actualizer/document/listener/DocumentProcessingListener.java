@@ -1,10 +1,12 @@
 package dev.rudyevhenii.edu_material_actualizer.document.listener;
 
 import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
+import dev.rudyevhenii.edu_material_actualizer.document.domain.AggregatedBlock;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentStatusChangedEvent;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentUploadCompletedEvent;
 import dev.rudyevhenii.edu_material_actualizer.document.service.DocumentParserService;
+import dev.rudyevhenii.edu_material_actualizer.llm.openai.service.OpenAiActualizerService;
 import dev.rudyevhenii.edu_material_actualizer.minio.service.MinioStorageService;
 import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneClient;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -25,6 +28,7 @@ public class DocumentProcessingListener {
     private final MinioStorageService minioStorageService;
     private final ApplicationEventPublisher publisher;
     private final SystemOneClient systemOneClient;
+    private final OpenAiActualizerService llmActualizerService;
 
     @Async("virtualExecutor")
     @EventListener
@@ -36,5 +40,11 @@ public class DocumentProcessingListener {
         Document document = documentParserService.parseDocument(inputStream);
 
         systemOneClient.doActualizationCheck(document);
+        List<AggregatedBlock> blocksToUpdate = document.getAggregatedBlocks().stream()
+                .filter(AggregatedBlock::isRequiredActualization)
+                .toList();
+
+        llmActualizerService.actualizeMaterials(blocksToUpdate);
+
     }
 }
