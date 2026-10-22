@@ -18,6 +18,7 @@ public class DocumentInfo {
     @Builder.Default
     private DocumentStatus documentStatus = DocumentStatus.PENDING;
     private String fileName;
+    private String contentType;
     private Instant createdAt;
     private Instant updatedAt;
 }

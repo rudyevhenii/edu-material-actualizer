@@ -17,6 +17,7 @@ public class DocumentInfoModel {
     private UUID id;
     private DocumentStatus documentStatus;
     private String fileName;
+    private String contentType;
     private Instant createdAt;
     private Instant updatedAt;
 }

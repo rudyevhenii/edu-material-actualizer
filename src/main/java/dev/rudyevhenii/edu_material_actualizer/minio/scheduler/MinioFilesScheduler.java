@@ -1,6 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.minio.scheduler;
 
-import dev.rudyevhenii.edu_material_actualizer.minio.properties.MinioProperties;
+import dev.rudyevhenii.edu_material_actualizer.minio.constants.MinioBucketName;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
 import io.minio.RemoveObjectArgs;
@@ -22,7 +22,6 @@ import java.time.ZonedDateTime;
 public class MinioFilesScheduler {
 
     private final MinioClient minioClient;
-    private final MinioProperties minioProperties;
 
     @Value("${app.minio.files.cleanup}")
     private Duration duration;
@@ -32,7 +31,7 @@ public class MinioFilesScheduler {
         log.info("Start of cleaning up temporarily files in MinIO...");
         try {
             Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder()
-                    .bucket(minioProperties.bucketName())
+                    .bucket(MinioBucketName.TEMPORAL.getName())
                     .recursive(true)
                     .build());
 
@@ -42,7 +41,7 @@ public class MinioFilesScheduler {
                 Item item = result.get();
                 if (item.lastModified().isBefore(cleanupInterval)) {
                     minioClient.removeObject(RemoveObjectArgs.builder()
-                            .bucket(minioProperties.bucketName())
+                            .bucket(MinioBucketName.TEMPORAL.getName())
                             .object(item.objectName())
                             .build());
                 }

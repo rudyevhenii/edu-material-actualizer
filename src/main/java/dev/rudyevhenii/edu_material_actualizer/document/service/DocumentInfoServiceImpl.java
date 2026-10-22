@@ -3,6 +3,7 @@ package dev.rudyevhenii.edu_material_actualizer.document.service;
 import dev.rudyevhenii.edu_material_actualizer.core.exceptions.DocumentInfoNotFoundException;
 import dev.rudyevhenii.edu_material_actualizer.core.util.GeneratorUtils;
 import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
+import dev.rudyevhenii.edu_material_actualizer.document.domain.CreateDocumentInfo;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
 import dev.rudyevhenii.edu_material_actualizer.document.storage.DocumentInfoStorage;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,10 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
     private final GeneratorUtils generator;
 
     @Override
-    public DocumentInfo createDocumentInfo(String fileName) {
-        DocumentInfo job = toDomain(fileName);
-        log.info("Job created for document with filename: {}", fileName);
-        return repository.createDocumentInfo(job);
+    public DocumentInfo createDocumentInfo(CreateDocumentInfo createDocumentInfo) {
+        DocumentInfo documentInfo = toDomain(createDocumentInfo);
+        log.info("Document info created with filename: {}", documentInfo.getFileName());
+        return repository.createDocumentInfo(documentInfo);
     }
 
     @Override
@@ -45,10 +46,11 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
                         .formatted(id)));
     }
 
-    private DocumentInfo toDomain(String fileName) {
+    private DocumentInfo toDomain(CreateDocumentInfo createDocumentInfo) {
         return DocumentInfo.builder()
                 .id(generator.uuid())
-                .fileName(fileName)
+                .fileName(createDocumentInfo.getFileName())
+                .contentType(createDocumentInfo.getContentType())
                 .createdAt(generator.now())
                 .updatedAt(generator.now())
                 .build();
