@@ -9,6 +9,15 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         model: gpt-5-mini
+    mcp:
+      client:
+        streamable-http:
+          connections:
+            wigolo:
+              url: http://localhost:3333
+              endpoint: /mcp
+        request-timeout: 120s
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}

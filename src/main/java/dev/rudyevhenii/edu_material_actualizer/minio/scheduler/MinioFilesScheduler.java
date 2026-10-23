@@ -1,5 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.minio.scheduler;
 
+import dev.rudyevhenii.edu_material_actualizer.core.exceptions.MinioCleanupException;
 import dev.rudyevhenii.edu_material_actualizer.minio.constants.MinioBucketName;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
@@ -47,8 +48,7 @@ public class MinioFilesScheduler {
                 }
             }
         } catch (MinioException e) {
-            throw new RuntimeException(e);
+            throw new MinioCleanupException("Error while cleaning up temporarily files in MinIO");
         }
-
     }
 }

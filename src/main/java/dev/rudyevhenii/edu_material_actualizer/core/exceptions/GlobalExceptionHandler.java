@@ -32,22 +32,6 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(status, ex.getMessage()));
     }
 
-    @ExceptionHandler(DocumentProcessingException.class)
-    public ResponseEntity<ErrorResponse> handleException(DocumentProcessingException ex) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        logErrorMessage(status, ex);
-        return ResponseEntity.status(status)
-                .body(buildErrorResponse(status, ex.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidDocumentFormatException.class)
-    public ResponseEntity<ErrorResponse> handleException(InvalidDocumentFormatException ex) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        logErrorMessage(status, ex);
-        return ResponseEntity.status(status)
-                .body(buildErrorResponse(status, ex.getMessage()));
-    }
-
     @ExceptionHandler(StorageInitializationException.class)
     public ResponseEntity<ErrorResponse> handleException(StorageInitializationException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -66,6 +50,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileRetrievalException.class)
     public ResponseEntity<ErrorResponse> handleException(FileRetrievalException ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
+    @ExceptionHandler(MinioCleanupException.class)
+    public ResponseEntity<ErrorResponse> handleException(MinioCleanupException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         logErrorMessage(status, ex);
         return ResponseEntity.status(status)

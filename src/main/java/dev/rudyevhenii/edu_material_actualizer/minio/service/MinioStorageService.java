@@ -47,9 +47,8 @@ public class MinioStorageService {
     }
 
     public String saveTemporaryFile(UUID id, MultipartFile file) {
+        String objectName = resolveObjectName(id, file.getOriginalFilename());
         try {
-            String objectName = resolveObjectName(id, file.getOriginalFilename());
-
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(MinioBucketName.TEMPORAL.getName())
                     .object(objectName)

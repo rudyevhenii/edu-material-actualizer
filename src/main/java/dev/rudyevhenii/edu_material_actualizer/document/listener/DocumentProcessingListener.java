@@ -1,6 +1,5 @@
 package dev.rudyevhenii.edu_material_actualizer.document.listener;
 
-import dev.rudyevhenii.edu_material_actualizer.core.exceptions.FileUploadException;
 import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.AggregatedBlock;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
@@ -15,6 +14,7 @@ import dev.rudyevhenii.edu_material_actualizer.minio.service.MinioStorageService
 import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -45,23 +45,28 @@ public class DocumentProcessingListener {
         log.info("Processing document with id [{}]", event.getId());
         publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.PROCESSING));
 
-        InputStream inputStream = minioStorageService.downloadFile(event.getSavedFilePath());
-        Document document = documentParserService.parseDocument(inputStream);
+        try {
+            InputStream inputStream = minioStorageService.downloadFile(event.getSavedFilePath());
+            Document document = documentParserService.parseDocument(inputStream);
+            systemOneClient.doActualizationCheck(document);
+            List<AggregatedBlock> blocksToUpdate = document.getAggregatedBlocks().stream()
+                    .filter(AggregatedBlock::isRequiredActualization)
+                    .toList();
 
-        systemOneClient.doActualizationCheck(document);
-        List<AggregatedBlock> blocksToUpdate = document.getAggregatedBlocks().stream()
-                .filter(AggregatedBlock::isRequiredActualization)
-                .toList();
+            llmActualizerService.actualizeMaterials(blocksToUpdate);
+            documentModifierService.updateTextBlocks(document);
 
-        llmActualizerService.actualizeMaterials(blocksToUpdate);
-        documentModifierService.updateTextBlocks(document);
-
-        uploadProcessedDocument(event, document);
+            uploadProcessedDocument(event, document);
+        } catch (IOException e) {
+            log.error("Failed to process document with id [{}]. Error: {}", event.getId(), e.getMessage(), e);
+            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.FAILED));
+        }
     }
 
-    private void uploadProcessedDocument(DocumentUploadCompletedEvent event, Document document) {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            document.getDocument().write(out);
+    private void uploadProcessedDocument(DocumentUploadCompletedEvent event, Document document) throws IOException {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+             XWPFDocument poiDocument = document.getDocument()) {
+            poiDocument.write(out);
             byte[] documentBytes = out.toByteArray();
 
             try (InputStream is = new ByteArrayInputStream(documentBytes)) {
@@ -69,11 +74,6 @@ public class DocumentProcessingListener {
                 minioStorageService.saveResultFile(documentInfo, is, documentBytes.length);
             }
             publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.COMLETED));
-
-        } catch (IOException e) {
-            log.error("Failed to write document bytes for id [{}]", event.getId(), e);
-            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.FAILED));
-            throw new FileUploadException("Error while uploading actualized file");
         }
     }
 }
