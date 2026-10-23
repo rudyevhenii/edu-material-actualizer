@@ -34,11 +34,8 @@ public class DocumentParserServiceImpl implements DocumentParserService {
 
     @Override
     public Document parseDocument(InputStream inputStream) {
-        return extractDocument(inputStream);
-    }
-
-    private Document extractDocument(InputStream inputStream) {
-        try (XWPFDocument document = new XWPFDocument(inputStream)) {
+        try {
+            XWPFDocument document = new XWPFDocument(inputStream);
             return Document.builder()
                     .id(generator.uuid())
                     .aggregatedBlocks(extractParagraphAggregatedText(document))

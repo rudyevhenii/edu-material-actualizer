@@ -9,6 +9,15 @@ spring:
       api-key: ${OPENAI_API_KEY}
       chat:
         model: gpt-5-mini
+    mcp:
+      client:
+        streamable-http:
+          connections:
+            wigolo:
+              url: http://localhost:3333
+              endpoint: /mcp
+        request-timeout: 120s
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -23,7 +32,9 @@ app:
     endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
     access-key: ${MINIO_ACCESS_KEY:minioadmin}
     secret-key: ${MINIO_SECRET_KEY:minioadmin}
-    bucket-name: files
+    bucket-names:
+      - temporal
+      - results
     files:
       scheduler:
         exriration:
