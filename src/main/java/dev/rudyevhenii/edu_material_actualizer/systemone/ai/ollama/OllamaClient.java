@@ -1,7 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.systemone.ai.ollama;
 
 import dev.rudyevhenii.edu_material_actualizer.systemone.AbstractSystemOneClient;
-import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneType;
 import dev.rudyevhenii.edu_material_actualizer.systemone.ai.ollama.properties.OllamaProperties;
 import dev.rudyevhenii.edu_material_actualizer.systemone.validator.SystemOneThresholdValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,10 +29,5 @@ public class OllamaClient extends AbstractSystemOneClient {
     @Override
     protected String getModel() {
         return ollamaProperties.model().getModel();
-    }
-
-    @Override
-    public SystemOneType getSystemOneType() {
-        return SystemOneType.OLLAMA;
     }
 }

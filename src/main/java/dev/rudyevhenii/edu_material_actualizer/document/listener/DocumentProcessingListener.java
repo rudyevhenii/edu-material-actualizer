@@ -46,7 +46,7 @@ public class DocumentProcessingListener {
         publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.PROCESSING));
 
         try {
-            InputStream inputStream = minioStorageService.downloadFile(event.getSavedFilePath());
+            InputStream inputStream = minioStorageService.downloadTemporalFile(event.getSavedFilePath());
             Document document = documentParserService.parseDocument(inputStream);
             systemOneClient.doActualizationCheck(document);
             List<AggregatedBlock> blocksToUpdate = document.getAggregatedBlocks().stream()
@@ -73,7 +73,7 @@ public class DocumentProcessingListener {
                 DocumentInfo documentInfo = documentInfoService.getDocumentInfoById(event.getId());
                 minioStorageService.saveResultFile(documentInfo, is, documentBytes.length);
             }
-            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.COMLETED));
+            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.COMPLETED));
         }
     }
 }

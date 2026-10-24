@@ -6,14 +6,6 @@ info:
 
 components:
   schemas:
-    DocumentStatus:
-      type: string
-      enum:
-        - PENDING
-        - PROCESSING
-        - COMLETED
-        - FAILED
-
     ErrorResponse:
       type: object
       properties:
@@ -41,6 +33,13 @@ components:
   responses:
     BadRequest:
       description: "Validation errors with field-level details"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: "Document not found with specified id"
       content:
         application/json:
           schema:
