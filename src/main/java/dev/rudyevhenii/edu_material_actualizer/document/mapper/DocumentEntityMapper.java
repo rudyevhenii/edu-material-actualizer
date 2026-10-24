@@ -1,14 +1,14 @@
 package dev.rudyevhenii.edu_material_actualizer.document.mapper;
 
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
-import dev.rudyevhenii.edu_material_actualizer.document.model.DocumentInfoModel;
+import dev.rudyevhenii.edu_material_actualizer.document.entity.DocumentInfoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface DocumentDomainMapper {
+public interface DocumentEntityMapper {
 
-    DocumentInfoModel map(DocumentInfo documentInfo);
+    DocumentInfoEntity map(DocumentInfo documentInfo);
 
-    DocumentInfo map(DocumentInfoModel documentInfoModel);
+    DocumentInfo map(DocumentInfoEntity documentInfoModel);
 }

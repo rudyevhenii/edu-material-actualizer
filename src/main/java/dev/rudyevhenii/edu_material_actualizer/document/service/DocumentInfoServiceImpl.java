@@ -6,11 +6,12 @@ import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
 import dev.rudyevhenii.edu_material_actualizer.document.dto.DocumentInfoRequest;
 import dev.rudyevhenii.edu_material_actualizer.document.dto.DocumentStatusResponse;
-import dev.rudyevhenii.edu_material_actualizer.document.storage.DocumentInfoStorage;
+import dev.rudyevhenii.edu_material_actualizer.document.repository.DocumentInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -18,14 +19,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DocumentInfoServiceImpl implements DocumentInfoService {
 
-    private final DocumentInfoStorage repository;
+    private final DocumentInfoRepository repository;
     private final GeneratorUtils generator;
 
     @Override
     public DocumentInfo createDocumentInfo(DocumentInfoRequest documentInfoRequest) {
         DocumentInfo documentInfo = toDomain(documentInfoRequest);
         log.info("Document info created with filename: {}", documentInfo.getFileName());
-        return repository.createDocumentInfo(documentInfo);
+        return repository.create(documentInfo);
     }
 
     @Override
@@ -34,9 +35,19 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
     }
 
     @Override
-    public DocumentStatusResponse getDocumentStatus(UUID id) {
+    public DocumentStatusResponse getDocumentInfoStatus(UUID id) {
         DocumentInfo documentInfo = getById(id);
         return toDocumentStatus(documentInfo);
+    }
+
+    @Override
+    public List<DocumentInfo> getAllDocumentsInfo() {
+        return repository.findAll();
+    }
+
+    @Override
+    public List<DocumentInfo> getDocumentsInfoByStatus(DocumentStatus documentStatus) {
+        return repository.findAllByStatus(documentStatus);
     }
 
     @Override
@@ -44,11 +55,11 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
         DocumentInfo documentInfo = getById(id);
         documentInfo.setDocumentStatus(documentStatus);
         documentInfo.setUpdatedAt(generator.now());
-        repository.updateDocumentInfo(documentInfo);
+        repository.update(documentInfo);
     }
 
     private DocumentInfo getById(UUID id) {
-        return repository.findDocumentInfoById(id.toString())
+        return repository.findById(id)
                 .orElseThrow(() -> new DocumentInfoNotFoundException("Document info does not exist with id '%s'"
                         .formatted(id)));
     }
