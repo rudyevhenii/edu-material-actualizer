@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Data
-@RedisHash(value = DocumentInfoEntity.KEY_PREFIX)
+@RedisHash(value = DocumentInfoEntity.KEY_PREFIX, timeToLive = 604800)
 public class DocumentInfoEntity {
     public static final String KEY_PREFIX = "documentInfo";
 

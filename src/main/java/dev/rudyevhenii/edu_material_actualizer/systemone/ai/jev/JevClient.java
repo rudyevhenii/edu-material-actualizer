@@ -1,7 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.systemone.ai.jev;
 
 import dev.rudyevhenii.edu_material_actualizer.systemone.AbstractSystemOneClient;
-import dev.rudyevhenii.edu_material_actualizer.systemone.SystemOneType;
 import dev.rudyevhenii.edu_material_actualizer.systemone.ai.jev.properties.JevProperties;
 import dev.rudyevhenii.edu_material_actualizer.systemone.validator.SystemOneThresholdValidator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,10 +29,5 @@ public class JevClient extends AbstractSystemOneClient {
     @Override
     protected String getModel() {
         return jevProperties.model().getModel();
-    }
-
-    @Override
-    public SystemOneType getSystemOneType() {
-        return SystemOneType.JEV;
     }
 }

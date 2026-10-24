@@ -1,7 +1,7 @@
 info:
   name: Upload Document
   type: http
-  seq: 2
+  seq: 1
 
 http:
   method: POST
@@ -15,6 +15,14 @@ http:
           - C:\Users\admin\OneDrive\Документы\Working_stuff\Word things\11 semestr\Основи аналізу та моделювання бізнес-процесів в ІТ\word\Рудь_М-F2-25-1-ПІ_ПР1.docx
         contentType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.getStatus() === 202) {
+          bru.setVar("DOCUMENT_ID", res.getBody().id)
+        }
 
 settings:
   encodeUrl: true

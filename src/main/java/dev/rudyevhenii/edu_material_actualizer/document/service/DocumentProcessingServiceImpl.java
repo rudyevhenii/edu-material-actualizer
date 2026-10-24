@@ -38,7 +38,7 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     @Override
     public DocumentResponse downloadResultFile(UUID id) {
         DocumentInfo documentInfo = documentInfoService.getDocumentInfoById(id);
-        if (documentInfo.getDocumentStatus() != DocumentStatus.COMLETED) {
+        if (documentInfo.getDocumentStatus() != DocumentStatus.COMPLETED) {
             throw new DocumentStatusStateException("Document processing is not completed. Current status: [%s]"
                     .formatted(documentInfo.getDocumentStatus()));
         }

@@ -73,7 +73,7 @@ public class DocumentProcessingListener {
                 DocumentInfo documentInfo = documentInfoService.getDocumentInfoById(event.getId());
                 minioStorageService.saveResultFile(documentInfo, is, documentBytes.length);
             }
-            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.COMLETED));
+            publisher.publishEvent(DocumentStatusChangedEvent.create(event.getId(), DocumentStatus.COMPLETED));
         }
     }
 }

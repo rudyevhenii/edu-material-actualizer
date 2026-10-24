@@ -38,8 +38,8 @@ app:
     files:
       scheduler:
         exriration:
-          cron: "0 0 * * * *"
-      cleanup: 1h
+          cron: "0 0 10 * * *"
+      cleanup: 7d
   system-one:
     laya:
       base-url: "http://${LAYA_HOST:localhost}:${LAYA_PORT:9100}"
@@ -57,3 +57,7 @@ app:
     parser:
       aggregated-text:
         characters-per-paragraph: 500
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: DEBUG

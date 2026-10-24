@@ -1,6 +1,7 @@
 package dev.rudyevhenii.edu_material_actualizer.document;
 
 import dev.rudyevhenii.edu_material_actualizer.api.dto.document.DocumentInfoDto;
+import dev.rudyevhenii.edu_material_actualizer.api.dto.document.DocumentStatusDto;
 import dev.rudyevhenii.edu_material_actualizer.api.dto.document.DocumentStatusResponseDto;
 import dev.rudyevhenii.edu_material_actualizer.api.interfaces.document.DocumentApi;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
@@ -11,6 +12,7 @@ import dev.rudyevhenii.edu_material_actualizer.document.service.DocumentInfoServ
 import dev.rudyevhenii.edu_material_actualizer.document.service.DocumentProcessingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,18 +40,38 @@ public class DocumentController implements DocumentApi {
     }
 
     @Override
+    public ResponseEntity<List<DocumentInfoDto>> getAllDocumentsInfo() {
+        List<DocumentInfo> response = documentInfoService.getAllDocumentsInfo();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response.stream()
+                        .map(mapper::map)
+                        .toList());
+    }
+
+    @Override
+    public ResponseEntity<List<DocumentInfoDto>> getAllDocumentsInfoByStatus(DocumentStatusDto status) {
+        DocumentStatus documentStatus = mapper.map(status);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(documentInfoService.getDocumentsInfoByStatus(documentStatus).stream()
+                        .map(mapper::map)
+                        .toList());
+    }
+
+    @Override
     public ResponseEntity<DocumentStatusResponseDto> getDocumentStatus(UUID documentId) {
-        DocumentStatusResponse response = documentInfoService.getDocumentStatus(documentId);
+        DocumentStatusResponse response = documentInfoService.getDocumentInfoStatus(documentId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mapper.map(response));
     }
 
     @Override
-    public ResponseEntity<Resource> downloadProcessedDocument(UUID documentId) {
+    public ResponseEntity<Resource> downloadDocument(UUID documentId) {
         DocumentResponse response = documentProcessingService.downloadResultFile(documentId);
-        String fileName = response.documentInfo().getFileName();
+        ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                .filename(response.documentInfo().getFileName(), StandardCharsets.UTF_8)
+                .build();
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
                 .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
                 .body(response.resource());
     }

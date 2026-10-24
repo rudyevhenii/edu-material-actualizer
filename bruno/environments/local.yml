@@ -3,3 +3,6 @@ variables:
   - name: BASE_URL
     value: http://localhost:8080
     description: ""
+  - name: DOCUMENT_ID
+    value: ""
+    description: ""
