@@ -46,6 +46,13 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
 
+    NotFound:
+      description: "Document not found with specified id"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
     InternalServerError:
       description: "Unexpected server error occurred"
       content:

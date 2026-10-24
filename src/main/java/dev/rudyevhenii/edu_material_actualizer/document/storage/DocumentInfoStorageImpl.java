@@ -1,7 +1,7 @@
 package dev.rudyevhenii.edu_material_actualizer.document.storage;
 
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
-import dev.rudyevhenii.edu_material_actualizer.document.mapper.DocumentModelMapper;
+import dev.rudyevhenii.edu_material_actualizer.document.mapper.DocumentDomainMapper;
 import dev.rudyevhenii.edu_material_actualizer.document.model.DocumentInfoModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -18,7 +18,7 @@ public class DocumentInfoStorageImpl implements DocumentInfoStorage {
     private static final Duration JOB_TTL = Duration.ofMinutes(60);
 
     private final RedisTemplate<String, DocumentInfoModel> redisTemplate;
-    private final DocumentModelMapper mapper;
+    private final DocumentDomainMapper mapper;
 
     @Override
     public DocumentInfo createDocumentInfo(DocumentInfo documentInfo) {

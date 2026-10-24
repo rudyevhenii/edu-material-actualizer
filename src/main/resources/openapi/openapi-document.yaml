@@ -28,15 +28,56 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DocumentStatusResponse"
+                $ref: "#/components/schemas/DocumentInfo"
         "400":
           $ref: 'common-components.yaml#/components/responses/BadRequest'
         "500":
           $ref: 'common-components.yaml#/components/responses/InternalServerError'
 
+  /api/documents/{documentId}/status:
+    get:
+      operationId: "getDocumentStatus"
+      tags:
+        - "Document"
+      parameters:
+        - $ref: "#/components/parameters/DocumentParam"
+      responses:
+        "200":
+          description: "Document"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentStatusResponse"
+        "400":
+          $ref: 'common-components.yaml#/components/responses/BadRequest'
+        "404":
+          $ref: 'common-components.yaml#/components/responses/NotFound'
+        "500":
+          $ref: 'common-components.yaml#/components/responses/InternalServerError'
+
+  /api/documents/{documentId}/download:
+    get:
+      operationId: "downloadProcessedDocument"
+      tags:
+        - "Document"
+      parameters:
+        - $ref: "#/components/parameters/DocumentParam"
+      responses:
+        "200":
+          description: "Document successfully downloaded"
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+          content:
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+              schema:
+                type: string
+                format: binary
+
 components:
   schemas:
-    DocumentStatusResponse:
+    DocumentInfo:
       type: object
       description: "Document info processing status response"
       properties:
@@ -50,6 +91,8 @@ components:
         fileName:
           type: string
           description: "Original name of the uploaded file (e.g. lecture-notes.pdf)"
+        contentType:
+          type: string
         createdAt:
           type: string
           format: date-time
@@ -58,3 +101,18 @@ components:
           type: string
           format: date-time
           description: "Last document info status update timestamp (e.g. 2024-01-15T14:30:00Z)"
+
+    DocumentStatusResponse:
+      type: object
+      properties:
+        status:
+          $ref: 'common-components.yaml#/components/schemas/DocumentStatus'
+
+  parameters:
+    DocumentParam:
+      in: path
+      name: documentId
+      required: true
+      schema:
+        type: string
+        format: uuid

@@ -32,6 +32,14 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(status, ex.getMessage()));
     }
 
+    @ExceptionHandler(DocumentStatusStateException.class)
+    public ResponseEntity<ErrorResponse> handleException(DocumentStatusStateException ex) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        logErrorMessage(status, ex);
+        return ResponseEntity.status(status)
+                .body(buildErrorResponse(status, ex.getMessage()));
+    }
+
     @ExceptionHandler(StorageInitializationException.class)
     public ResponseEntity<ErrorResponse> handleException(StorageInitializationException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

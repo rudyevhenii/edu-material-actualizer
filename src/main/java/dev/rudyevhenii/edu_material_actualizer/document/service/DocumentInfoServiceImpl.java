@@ -3,8 +3,9 @@ package dev.rudyevhenii.edu_material_actualizer.document.service;
 import dev.rudyevhenii.edu_material_actualizer.core.exceptions.DocumentInfoNotFoundException;
 import dev.rudyevhenii.edu_material_actualizer.core.util.GeneratorUtils;
 import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
-import dev.rudyevhenii.edu_material_actualizer.document.domain.CreateDocumentInfo;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
+import dev.rudyevhenii.edu_material_actualizer.document.dto.DocumentInfoRequest;
+import dev.rudyevhenii.edu_material_actualizer.document.dto.DocumentStatusResponse;
 import dev.rudyevhenii.edu_material_actualizer.document.storage.DocumentInfoStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,8 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
     private final GeneratorUtils generator;
 
     @Override
-    public DocumentInfo createDocumentInfo(CreateDocumentInfo createDocumentInfo) {
-        DocumentInfo documentInfo = toDomain(createDocumentInfo);
+    public DocumentInfo createDocumentInfo(DocumentInfoRequest documentInfoRequest) {
+        DocumentInfo documentInfo = toDomain(documentInfoRequest);
         log.info("Document info created with filename: {}", documentInfo.getFileName());
         return repository.createDocumentInfo(documentInfo);
     }
@@ -30,6 +31,12 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
     @Override
     public DocumentInfo getDocumentInfoById(UUID id) {
         return getById(id);
+    }
+
+    @Override
+    public DocumentStatusResponse getDocumentStatus(UUID id) {
+        DocumentInfo documentInfo = getById(id);
+        return toDocumentStatus(documentInfo);
     }
 
     @Override
@@ -46,13 +53,19 @@ public class DocumentInfoServiceImpl implements DocumentInfoService {
                         .formatted(id)));
     }
 
-    private DocumentInfo toDomain(CreateDocumentInfo createDocumentInfo) {
+    private DocumentInfo toDomain(DocumentInfoRequest documentInfoRequest) {
         return DocumentInfo.builder()
                 .id(generator.uuid())
-                .fileName(createDocumentInfo.getFileName())
-                .contentType(createDocumentInfo.getContentType())
+                .fileName(documentInfoRequest.fileName())
+                .contentType(documentInfoRequest.contentType())
                 .createdAt(generator.now())
                 .updatedAt(generator.now())
+                .build();
+    }
+
+    private DocumentStatusResponse toDocumentStatus(DocumentInfo documentInfo) {
+        return DocumentStatusResponse.builder()
+                .status(documentInfo.getDocumentStatus())
                 .build();
     }
 }

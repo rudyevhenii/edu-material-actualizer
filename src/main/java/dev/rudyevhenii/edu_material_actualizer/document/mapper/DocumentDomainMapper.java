@@ -1,14 +1,14 @@
 package dev.rudyevhenii.edu_material_actualizer.document.mapper;
 
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
-import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentStatusResponse;
+import dev.rudyevhenii.edu_material_actualizer.document.model.DocumentInfoModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface DocumentDomainMapper {
 
-    DocumentStatusResponse map(DocumentInfo documentInfo);
+    DocumentInfoModel map(DocumentInfo documentInfo);
+
+    DocumentInfo map(DocumentInfoModel documentInfoModel);
 }

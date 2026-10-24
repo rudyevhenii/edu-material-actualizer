@@ -8,6 +8,7 @@ import dev.rudyevhenii.edu_material_actualizer.minio.constants.MinioBucketName;
 import dev.rudyevhenii.edu_material_actualizer.minio.properties.MinioProperties;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -76,12 +77,21 @@ public class MinioStorageService {
         }
     }
 
-    public InputStream downloadFile(String objectName) {
+    public InputStream downloadTemporalFile(String objectName) {
+        return downloadFile(MinioBucketName.TEMPORAL, objectName);
+    }
+
+    public InputStream downloadResultFile(DocumentInfo documentInfo) {
+        String objectName = resolveObjectName(documentInfo.getId(), documentInfo.getFileName());
+        return downloadFile(MinioBucketName.RESULTS, objectName);
+    }
+
+    private GetObjectResponse downloadFile(MinioBucketName bucket, String objectName) {
         try {
             return minioClient.getObject(GetObjectArgs.builder()
-                            .bucket(MinioBucketName.TEMPORAL.getName())
-                            .object(objectName)
-                            .build());
+                    .bucket(bucket.getName())
+                    .object(objectName)
+                    .build());
         } catch (MinioException e) {
             throw new FileRetrievalException("Could not download file from MinIO");
         }
