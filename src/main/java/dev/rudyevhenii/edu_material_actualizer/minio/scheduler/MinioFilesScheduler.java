@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -29,10 +30,14 @@ public class MinioFilesScheduler {
 
     @Scheduled(cron = "${app.minio.files.scheduler.exriration.cron}")
     public void cleanupOldFiles() {
-        log.info("Start of cleaning up temporarily files in MinIO...");
+        log.info("Start of cleaning up files in MinIO...");
+        Stream.of(MinioBucketName.values()).forEach(this::cleanFilesFromBucket);
+    }
+
+    private void cleanFilesFromBucket(MinioBucketName bucketName) {
         try {
             Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder()
-                    .bucket(MinioBucketName.TEMPORAL.getName())
+                    .bucket(bucketName.getName())
                     .recursive(true)
                     .build());
 
@@ -42,13 +47,13 @@ public class MinioFilesScheduler {
                 Item item = result.get();
                 if (item.lastModified().isBefore(cleanupInterval)) {
                     minioClient.removeObject(RemoveObjectArgs.builder()
-                            .bucket(MinioBucketName.TEMPORAL.getName())
+                            .bucket(bucketName.getName())
                             .object(item.objectName())
                             .build());
                 }
             }
         } catch (MinioException e) {
-            throw new MinioCleanupException("Error while cleaning up temporarily files in MinIO");
+            throw new MinioCleanupException("Error while cleaning up files in MinIO");
         }
     }
 }

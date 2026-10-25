@@ -31,7 +31,7 @@ public class OpenAiActualizerServiceImpl implements OpenAiActualizerService {
     };
 
     private final ChatClient chatClient;
-    private final ExecutorService virtualExecutor;
+    private final ExecutorService llmExecutor;
     private final OpenAiActualizerMapper mapper;
     private final ObjectMapper objectMapper;
 
@@ -54,7 +54,7 @@ public class OpenAiActualizerServiceImpl implements OpenAiActualizerService {
                         .param("aggregatedText", aggregatedBlock.getAggregatedText()))
                 .user(paragraph)
                 .call()
-                .entity(PARAGRAPH_TYPE_REF), virtualExecutor);
+                .entity(PARAGRAPH_TYPE_REF), llmExecutor);
     }
 
     private void applyUpdatesToBlock(AggregatedBlock aggregatedBlock, List<ParagraphResponse> paragraphResponses) {

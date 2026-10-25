@@ -15,9 +15,9 @@ public class OllamaClient extends AbstractSystemOneClient {
 
     private final OllamaProperties ollamaProperties;
 
-    public OllamaClient(ExecutorService virtualExecutor, RestClient ollamaRestClient,
+    public OllamaClient(ExecutorService systemOneExecutor, RestClient ollamaRestClient,
                         SystemOneThresholdValidator thresholdValidator, OllamaProperties ollamaProperties) {
-        super(virtualExecutor, ollamaRestClient, thresholdValidator);
+        super(systemOneExecutor, ollamaRestClient, thresholdValidator);
         this.ollamaProperties = ollamaProperties;
     }
 

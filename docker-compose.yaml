@@ -50,6 +50,12 @@ services:
     environment:
       - WIGOLO_SERVE_ALLOW_UNAUTHENTICATED=1
     command: serve --host 0.0.0.0
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 500M
 
 volumes:
   redis_data:

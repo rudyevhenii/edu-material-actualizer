@@ -15,9 +15,9 @@ public class LayaClient extends AbstractSystemOneClient {
 
     private final LayaProperties layaProperties;
 
-    public LayaClient(ExecutorService virtualExecutor, RestClient layaRestClient,
+    public LayaClient(ExecutorService systemOneExecutor, RestClient layaRestClient,
                       SystemOneThresholdValidator thresholdValidator, LayaProperties layaProperties) {
-        super(virtualExecutor, layaRestClient, thresholdValidator);
+        super(systemOneExecutor, layaRestClient, thresholdValidator);
         this.layaProperties = layaProperties;
     }
 
