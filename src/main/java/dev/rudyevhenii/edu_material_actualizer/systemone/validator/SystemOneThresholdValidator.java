@@ -22,7 +22,7 @@ public class SystemOneThresholdValidator {
         Answer answer = answers.get(QuestionKey.REQUIRES_ACTUALIZATION.getValue());
         Answer.Noul noul = (Answer.Noul) answer;
 
-        if (noul.noul() > threshold) {
+        if (noul.noul() >= threshold) {
             aggregatedBlock.setRequiredActualization(true);
         }
     }

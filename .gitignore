@@ -37,3 +37,6 @@ out/
 .vscode/
 
 .env
+*-local.yaml
+*-local.yml
+*-local.properties

@@ -15,9 +15,9 @@ public class JevClient extends AbstractSystemOneClient {
 
     private final JevProperties jevProperties;
 
-    public JevClient(ExecutorService virtualExecutor, RestClient jevRestClient,
+    public JevClient(ExecutorService systemOneExecutor, RestClient jevRestClient,
                      SystemOneThresholdValidator thresholdValidator, JevProperties jevProperties) {
-        super(virtualExecutor, jevRestClient, thresholdValidator);
+        super(systemOneExecutor, jevRestClient, thresholdValidator);
         this.jevProperties = jevProperties;
     }
 

@@ -1,6 +1,7 @@
 package dev.rudyevhenii.edu_material_actualizer.llm.openai.service;
 
 import dev.rudyevhenii.edu_material_actualizer.document.domain.AggregatedBlock;
+import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.ParagraphChunk;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.TextChunk;
 import dev.rudyevhenii.edu_material_actualizer.llm.openai.integration.dto.ParagraphRequest;
@@ -31,13 +32,14 @@ public class OpenAiActualizerServiceImpl implements OpenAiActualizerService {
     };
 
     private final ChatClient chatClient;
-    private final ExecutorService virtualExecutor;
+    private final ExecutorService llmExecutor;
     private final OpenAiActualizerMapper mapper;
     private final ObjectMapper objectMapper;
 
     @Override
-    public void actualizeMaterials(List<AggregatedBlock> aggregatedBlocks) {
-        List<CompletableFuture<Void>> futures = aggregatedBlocks.stream()
+    public void actualizeMaterials(Document document) {
+        List<CompletableFuture<Void>> futures = document.getAggregatedBlocks().stream()
+                .filter(AggregatedBlock::isRequiredActualization)
                 .map(block -> fetchActualizedDocument(block)
                         .thenAccept(responses -> applyUpdatesToBlock(block, responses)))
                 .toList();
@@ -54,7 +56,7 @@ public class OpenAiActualizerServiceImpl implements OpenAiActualizerService {
                         .param("aggregatedText", aggregatedBlock.getAggregatedText()))
                 .user(paragraph)
                 .call()
-                .entity(PARAGRAPH_TYPE_REF), virtualExecutor);
+                .entity(PARAGRAPH_TYPE_REF), llmExecutor);
     }
 
     private void applyUpdatesToBlock(AggregatedBlock aggregatedBlock, List<ParagraphResponse> paragraphResponses) {
@@ -66,7 +68,9 @@ public class OpenAiActualizerServiceImpl implements OpenAiActualizerService {
         for (ParagraphResponse paragraphResponse : paragraphResponses) {
             for (TextResponse textResponse : paragraphResponse.textResponses()) {
                 TextChunk textChunk = textChunksMap.get(textResponse.id());
-                textChunk.setUpdatedText(textResponse.updatedText());
+                if (textChunk != null) {
+                    textChunk.setUpdatedText(textResponse.updatedText());
+                }
             }
         }
     }

@@ -5,17 +5,17 @@ import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.ParagraphChunk;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.TextChunk;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 @Service
 public class DocumentModifierServiceImpl implements DocumentModifierService {
 
     @Override
     public void updateTextBlocks(Document document) {
-        for (AggregatedBlock aggregatedBlock : document.getAggregatedBlocks()) {
-            for (ParagraphChunk paragraphChunk : aggregatedBlock.getParagraphChunks()) {
+        for (AggregatedBlock aggregatedTextBlock : document.getAggregatedBlocks()) {
+            for (ParagraphChunk paragraphChunk : aggregatedTextBlock.getParagraphChunks()) {
                 for (TextChunk textChunk : paragraphChunk.getTextChunks()) {
-                    if (!ObjectUtils.isEmpty(textChunk.getUpdatedText())) {
+                    if (StringUtils.hasText(textChunk.getUpdatedText())) {
                         replaceOriginalText(textChunk);
                     }
                 }

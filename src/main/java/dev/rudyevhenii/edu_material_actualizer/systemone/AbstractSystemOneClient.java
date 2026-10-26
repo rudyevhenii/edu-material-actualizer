@@ -21,16 +21,16 @@ import java.util.concurrent.ExecutorService;
 
 public abstract class AbstractSystemOneClient implements SystemOneClient {
 
-    private final ExecutorService virtualExecutor;
+    private final ExecutorService systemOneExecutor;
     private final RestClient restClient;
     private final SystemOneThresholdValidator thresholdValidator;
 
     @Value("classpath:string-templates/system-one/instructions.st")
     private Resource instructionsResource;
 
-    public AbstractSystemOneClient(ExecutorService virtualExecutor, RestClient restClient,
+    public AbstractSystemOneClient(ExecutorService systemOneExecutor, RestClient restClient,
                                    SystemOneThresholdValidator thresholdValidator) {
-        this.virtualExecutor = virtualExecutor;
+        this.systemOneExecutor = systemOneExecutor;
         this.restClient = restClient;
         this.thresholdValidator = thresholdValidator;
     }
@@ -66,7 +66,7 @@ public abstract class AbstractSystemOneClient implements SystemOneClient {
                             .model(getModel())
                             .build())
                     .retrieve()
-                    .body(Response.class), virtualExecutor);
+                    .body(Response.class), systemOneExecutor);
         } catch (IOException e) {
             throw new InstructionsReadException("Could not read instructions from file");
         }
