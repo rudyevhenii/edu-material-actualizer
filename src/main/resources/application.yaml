@@ -56,7 +56,7 @@ app:
   executor:
     pool-size:
       system-one: 10
-      llm: 5
+      llm: 10
   document:
     parser:
       aggregated-text:

@@ -1,7 +1,6 @@
 package dev.rudyevhenii.edu_material_actualizer.document.listener;
 
 import dev.rudyevhenii.edu_material_actualizer.document.DocumentStatus;
-import dev.rudyevhenii.edu_material_actualizer.document.domain.AggregatedBlock;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.Document;
 import dev.rudyevhenii.edu_material_actualizer.document.domain.DocumentInfo;
 import dev.rudyevhenii.edu_material_actualizer.document.event.DocumentStatusChangedEvent;
@@ -24,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -49,11 +47,7 @@ public class DocumentProcessingListener {
             InputStream inputStream = minioStorageService.downloadTemporalFile(event.getSavedFilePath());
             Document document = documentParserService.parseDocument(inputStream);
             systemOneClient.doActualizationCheck(document);
-            List<AggregatedBlock> blocksToUpdate = document.getAggregatedBlocks().stream()
-                    .filter(AggregatedBlock::isRequiredActualization)
-                    .toList();
-
-            llmActualizerService.actualizeMaterials(blocksToUpdate);
+            llmActualizerService.actualizeMaterials(document);
             documentModifierService.updateTextBlocks(document);
 
             uploadProcessedDocument(event, document);
